@@ -30,6 +30,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-function userUser() {
-  throw new Error("Function not implemented.");
-}
