@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  @apply bg-[#290260] text-slate-100;
+
+  overscroll-behavior: none;
+}
