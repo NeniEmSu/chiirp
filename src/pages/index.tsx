@@ -44,18 +44,18 @@ const PostView = ({ post }: { post: PostWithUser }) => {
       <Image
         src={post?.authorProfileImageUrl}
         alt={post?.authorName || "Author name"}
-        className="h-10 w-10 rounded-full"
-        width={40}
-        height={40}
+        className="h-12 w-12 rounded-full"
+        width={48}
+        height={48}
       />
       <div className="flex flex-col">
         <div className="flex gap-1 text-slate-300">
-          <span>{`@${post.authorName || "Author name"} `}</span>
+          <span className="text-bold">{`@${post.authorName || "@Author name"} `}</span>
           <span className="font-thin">{` · ${dayjs(
             post.createdAt
           ).fromNow()}`}</span>
         </div>
-        <p>{post.content}</p>
+        <p className="text-2xl">{post.content}</p>
       </div>
     </div>
   );
@@ -82,14 +82,12 @@ const Feed = () => {
 };
 
 const Home: NextPage = () => {
-  const { user, isLoaded,  } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
 
   //start fetching posts as soon as the page loads
   api.posts.getAll.useQuery();
 
   if (!isLoaded) return <div></div>;
-
-  if (!user) return <SignInButton />;
 
   return (
     <>
@@ -101,7 +99,7 @@ const Home: NextPage = () => {
       <main className="flex h-screen justify-center">
         <div className="h-full w-full border-x md:max-w-2xl">
           <div className="flex border-b border-slate-400 p-4">
-            {!user.isSignedIn ? (
+            {isSignedIn ? (
               <div className="flex justify-center">
                 <CreatePostWizard />
               </div>
