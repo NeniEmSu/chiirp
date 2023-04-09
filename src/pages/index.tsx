@@ -7,7 +7,8 @@ import Image from "next/image";
 import { api, type RouterOutputs } from "~/utils/api";
 
 import { useState } from "react";
-import { LoadingPage } from "~/components/loading";
+import toast from "react-hot-toast";
+import { LoadingPage, LoadingSpinner } from "~/components/loading";
 
 dayjs.extend(relativeTime);
 
@@ -23,6 +24,12 @@ const CreatePostWizard = () => {
       onSuccess: () => {
         setInput("");
         void ctx.posts.getAll.invalidate();
+      },
+      onError: (err) => {
+        toast.error(
+          err.data?.zodError?.fieldErrors?.content?.[0] ||
+            "Something went wrong"
+        );
       },
     });
 
@@ -46,20 +53,24 @@ const CreatePostWizard = () => {
         value={input}
         onChange={(e) => setInput(e.currentTarget.value)}
         onKeyDown={(e) => {
+          e.preventDefault();
           if (e.key === "Enter") {
             createPost({ content: e.currentTarget.value });
           }
         }}
         disabled={isPosting}
       />
-      <button
+      {input !== "" && !isPosting && <button
         type="submit"
+        className="bg-transparent border-2 text-white rounded-md px-6 py-2 hover:border-slate-400 hover:text-slate-400 transition-colors duration-200"
         onClick={() => {
           createPost({ content: input });
         }}
+        disabled={isPosting}
       >
         Post
-      </button>
+      </button>}
+      {isPosting && <div className="flex items-center justify-center"><LoadingSpinner /></div> }
     </div>
   );
 };
