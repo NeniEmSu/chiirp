@@ -6,12 +6,25 @@ import Head from "next/head";
 import Image from "next/image";
 import { api, type RouterOutputs } from "~/utils/api";
 
+import { useState } from "react";
 import { LoadingPage } from "~/components/loading";
 
 dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
   const { user } = useUser();
+
+  const [input, setInput] = useState("");
+
+  const ctx = api.useContext();
+
+  const { mutate: createPost, isLoading: isPosting } =
+    api.posts.create.useMutation({
+      onSuccess: () => {
+        setInput("");
+        void ctx.posts.getAll.invalidate();
+      },
+    });
 
   if (!user) return null;
 
@@ -25,12 +38,28 @@ const CreatePostWizard = () => {
         height={48}
       />
       <input
+        placeholder="Type some emojis and click enter to post!"
+        className="grow bg-transparent outline-none"
         type="text"
-        name="Emoji"
+        name="emoji"
         id="emoji"
-        placeholder="Type some emojis!"
-        className="w-full grow border-none bg-transparent focus:outline-none"
+        value={input}
+        onChange={(e) => setInput(e.currentTarget.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            createPost({ content: e.currentTarget.value });
+          }
+        }}
+        disabled={isPosting}
       />
+      <button
+        type="submit"
+        onClick={() => {
+          createPost({ content: input });
+        }}
+      >
+        Post
+      </button>
     </div>
   );
 };
@@ -50,7 +79,9 @@ const PostView = ({ post }: { post: PostWithUser }) => {
       />
       <div className="flex flex-col">
         <div className="flex gap-1 text-slate-300">
-          <span className="text-bold">{`@${post.authorName || "@Author name"} `}</span>
+          <span className="text-bold">{`@${
+            post.authorName || "@Author name"
+          } `}</span>
           <span className="font-thin">{` · ${dayjs(
             post.createdAt
           ).fromNow()}`}</span>
@@ -71,13 +102,11 @@ const Feed = () => {
   if (!data) return <div>Something went wrong</div>;
 
   return (
-    <>
-      <div className="">
-        {data?.map((post) => (
-          <PostView key={post.id} post={post} />
-        ))}
-      </div>
-    </>
+    <div className="">
+      {data?.map((post) => (
+        <PostView key={post.id} post={post} />
+      ))}
+    </div>
   );
 };
 
@@ -100,11 +129,11 @@ const Home: NextPage = () => {
         <div className="h-full w-full border-x md:max-w-2xl">
           <div className="flex border-b border-slate-400 p-4">
             {isSignedIn ? (
-              <div className="flex justify-center">
-                <CreatePostWizard />
-              </div>
+              <CreatePostWizard />
             ) : (
-              <SignInButton />
+              <div className="flex justify-center">
+                <SignInButton />{" "}
+              </div>
             )}
           </div>
           <Feed />
