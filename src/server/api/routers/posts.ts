@@ -18,13 +18,17 @@ const ratelimit = new Ratelimit({
 });
 
 export const postsRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
+  getPostsByUserId: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.post.findMany({
+        where: {
+          authorId: input.userId,
+        },
+        orderBy: { createdAt: "desc" },
+      });
     }),
+    
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       take: 10,
@@ -46,8 +50,8 @@ export const postsRouter = createTRPCRouter({
         });
       return {
         ...post,
-        authorName: user?.lastName,
-        authorProfileImageUrl: user?.profileImageUrl,
+        authorName: user.username,
+        authorProfileImageUrl: user.profileImageUrl,
       };
     });
   }),
