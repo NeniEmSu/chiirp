@@ -6,6 +6,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { api, type RouterOutputs } from "~/utils/api";
 
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
@@ -60,17 +61,23 @@ const CreatePostWizard = () => {
         }}
         disabled={isPosting}
       />
-      {input !== "" && !isPosting && <button
-        type="submit"
-        className="bg-transparent border-2 text-white rounded-md px-6 py-2 hover:border-slate-400 hover:text-slate-400 transition-colors duration-200"
-        onClick={() => {
-          createPost({ content: input });
-        }}
-        disabled={isPosting}
-      >
-        Post
-      </button>}
-      {isPosting && <div className="flex items-center justify-center"><LoadingSpinner /></div> }
+      {input !== "" && !isPosting && (
+        <button
+          type="submit"
+          className="rounded-md border-2 bg-transparent px-6 py-2 text-white transition-colors duration-200 hover:border-slate-400 hover:text-slate-400"
+          onClick={() => {
+            createPost({ content: input });
+          }}
+          disabled={isPosting}
+        >
+          Post
+        </button>
+      )}
+      {isPosting && (
+        <div className="flex items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      )}
     </div>
   );
 };
@@ -81,21 +88,28 @@ const PostView = ({ post }: { post: PostWithUser }) => {
 
   return (
     <div className="flex gap-3 border-b border-slate-400 p-4">
-      <Image
-        src={post?.authorProfileImageUrl}
-        alt={post?.authorName || "Author name"}
-        className="h-12 w-12 rounded-full"
-        width={48}
-        height={48}
-      />
+      <Link href={`/@${post?.authorName || "Author"}`}>
+        <Image
+          src={post?.authorProfileImageUrl}
+          alt={post?.authorName || "Author name"}
+          className="h-12 w-12 rounded-full"
+          width={48}
+          height={48}
+        />
+      </Link>
       <div className="flex flex-col">
         <div className="flex gap-1 text-slate-300">
-          <span className="text-bold">{`@${
-            post.authorName || "@Author name"
-          } `}</span>
-          <span className="font-thin">{` · ${dayjs(
-            post.createdAt
-          ).fromNow()}`}</span>
+          <Link href={`/@${post?.authorName || "Author"}`}>
+            {" "}
+            <span className="text-bold">{`@${
+              post.authorName || "Author name"
+            } `}</span>
+          </Link>
+          <Link href={`/post/${post?.id}`}>
+            <span className="font-thin">{` · ${dayjs(
+              post.createdAt
+            ).fromNow()}`}</span>
+          </Link>
         </div>
         <p className="text-2xl">{post.content}</p>
       </div>
