@@ -8,3 +8,40 @@ body {
   overflow: hidden;
   overscroll-behavior: none;
 }
+
+.text-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Raleway', sans-serif;
+}
+
+.text-container h1{
+  margin: 0;
+  font-size: 95px;
+  color: rgba(225,225,225, .01);
+  background-image: url("https://images.unsplash.com/photo-1499195333224-3ce974eecb47?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=2cf549433129d4227d1879347b9e78ce&auto=format&fit=crop&w=1248&q=80");
+  background-repeat: repeat;
+  -webkit-background-clip:text;
+  animation: animate 30s ease-in-out infinite;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+  @keyframes animate {
+    0%, 100% {
+      background-position: left top;
+    }
+    25%{
+      background-position: right bottom;
+     }
+    50% {
+      background-position: left bottom;
+    }
+    75% {
+      background-position: right top;
+    }   
+}

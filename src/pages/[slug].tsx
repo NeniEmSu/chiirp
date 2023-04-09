@@ -40,8 +40,8 @@ const ProfileFeed = ({
               src={profileImageUrl}
               alt={`${username ?? ""}'s profile pic`}
               className="h-12 w-12 rounded-full border-2 border-purple-500 bg-purple-500"
-          width={48}
-          height={48}
+              width={48}
+              height={48}
             />
             <div className="flex flex-col">
               <div className="text-lg font-bold">
@@ -77,7 +77,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <title>{`Chirp 🐦 | @${dataUsername || "Author"} Profile`}</title>
       </Head>
       <PageLayout>
-        <div className="relative h-36 bg-slate-500">
+        <div className="relative h-36 bg-purple-950">
+          <div className="text-container">
+            <h1>@{dataUsername}</h1>
+          </div>
           <Image
             src={profileImageUrl}
             alt={`${dataUsername ?? ""}'s profile pic`}
