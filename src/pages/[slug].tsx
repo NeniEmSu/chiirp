@@ -2,15 +2,12 @@ import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 
-import { createServerSideHelpers } from "@trpc/react-query/server";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
 import Link from "next/link";
-import superjson from "superjson";
 import { PageLayout } from "~/components/layout";
-import { appRouter } from "~/server/api/root";
-import { prisma } from "~/server/db";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 dayjs.extend(relativeTime);
 
@@ -107,11 +104,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = createServerSideHelpers({
-    router: appRouter,
-    ctx: { prisma, userId: null },
-    transformer: superjson, // optional - adds superjson serialization
-  });
+  const ssg = generateSSGHelper();
 
   const slug = context.params?.slug;
 
