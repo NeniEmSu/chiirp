@@ -17,7 +17,45 @@ const ratelimit = new Ratelimit({
   analytics: true,
 });
 
+
 export const postsRouter = createTRPCRouter({
+
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const user = await clerkClient.users.getUserList({
+        userId: [post.authorId],
+        limit: 1,
+      });
+
+      if (!user[0])
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User not found",
+        }); 
+
+      if(!user[0].username || !user[0].profileImageUrl) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "User data missing",
+        });
+      }
+
+      const { username, profileImageUrl } = user[0];
+        
+      return {
+        ...post,
+        authorName: username,
+        authorProfileImageUrl: profileImageUrl,
+      };
+    }),
+
   getPostsByUserId: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(({ ctx, input }) => {
