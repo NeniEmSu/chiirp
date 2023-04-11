@@ -12,7 +12,7 @@ export const PostView = ({ post }: { post: PostWithUser }) => {
   if (!post) return null;
 
   return (
-    <div className="flex gap-3 border-b border-slate-400 p-4">
+    <Link href={`/post/${post?.id}`} className="flex gap-3 border-b border-slate-400 p-4">
       <Link href={`/@${post?.authorName || "Author"}`}>
         <Image
           src={post?.authorProfileImageUrl}
@@ -38,6 +38,6 @@ export const PostView = ({ post }: { post: PostWithUser }) => {
         </div>
         <p className="text-2xl">{post.content}</p>
       </div>
-    </div>
+    </Link>
   );
 };
