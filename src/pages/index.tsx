@@ -1,9 +1,8 @@
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { api } from "~/utils/api";
 
 import { useState } from "react";
@@ -39,13 +38,10 @@ const CreatePostWizard = () => {
 
   return (
     <div className="flex w-full gap-3">
-      <Image
-        src={user?.profileImageUrl}
-        alt={user?.username || "User"}
-        className="h-12 w-12 rounded-full border-2 border-purple-500 bg-purple-500"
-        width={48}
-        height={48}
-      />
+      <div className=" flex justify-center items-center h-9 w-9 rounded-full border-2 border-purple-500 bg-purple-500">
+        <UserButton />
+      </div>
+
       <input
         placeholder="Type some emojis and click enter to post!"
         className="grow bg-transparent outline-none"
@@ -117,16 +113,16 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageLayout>
-          <div className="flex border-b border-slate-400 p-4">
-            {isSignedIn ? (
-              <CreatePostWizard />
-            ) : (
-              <div className="flex justify-center">
-                <SignInButton />{" "}
-              </div>
-            )}
-          </div>
-          <Feed />
+        <div className="flex border-b border-slate-400 p-4">
+          {isSignedIn ? (
+            <CreatePostWizard />
+          ) : (
+            <div className="flex justify-center">
+              <SignInButton />{" "}
+            </div>
+          )}
+        </div>
+        <Feed />
       </PageLayout>
     </>
   );
