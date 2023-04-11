@@ -103,7 +103,7 @@ const Home: NextPage = () => {
   //start fetching posts as soon as the page loads
   api.posts.getAll.useQuery();
 
-  if (!isLoaded) return <div></div>;
+  if (!isLoaded) return (<div>Nothing to See here</div>)
 
   return (
     <>
